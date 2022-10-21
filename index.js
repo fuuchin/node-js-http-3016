@@ -11,29 +11,59 @@ const server = http
 
     switch (req.method) {
       case 'GET':
-        if (req.url === '/enquetes/yaki-shabu') {
-          res.write(
-            pug.renderFile('./form.pug', {
-              path: req.url,
-              firstItem: '焼き肉',
-              secondItem: 'しゃぶしゃぶ'
-            })
-          );
-        } else if (req.url === '/enquetes/rice-bread') {
-          res.write(
-            pug.renderFile('./form.pug', {
-              path: req.url,
-              firstItem: 'ごはん',
-              secondItem: 'パン'
-            })
-          );
-        } else if (req.url === '/enquetes/sushi-pizza') {
-          res.write(pug.renderFile('./form.pug', {
+        if(req.url === '/') {
+          res.write(pug.renderFile('top.pug'));
+        } else if(req.url === '/enquetes') {
+          res.write(pug.renderFile('enquetes.pug'));
+        } else {
+          let firstItem;
+          let secondItem;
+          // req.urlのswitch
+          switch(req.url) {
+            case '/enquetes/yaki-shabu':
+              firstItem = '焼き肉';
+              secondItem = 'しゃぶしゃぶ';
+              break;
+            case '/enquetes/rice-bread':
+              firstItem = 'ごはん';
+              secondItem = 'パン';
+              break;
+            case '/enquetes/sushi-pizza':
+              firstItem = '寿司';
+              secondItem = 'ピザ';
+              break;
+            case '/enquetes/tsuna-kombu':
+              firstItem = 'ツナマヨおにぎり';
+              secondItem = '昆布おにぎり';
+              break;
+            case '/enquetes/cocoa-coffee':
+              firstItem = 'ココア';
+              secondItem = 'コーヒー';
+              break;
+            case '/enquetes/soba-udon':
+              firstItem = 'そば';
+              secondItem = 'うどん';
+              break;
+            case '/enquetes/tkg-natto':
+              firstItem = '卵かけごはん';
+              secondItem = '納豆ごはん';
+              break;
+            case '/enquetes/egg-daikon':
+              firstItem = 'おでんの卵';
+              secondItem = 'おでんの大根';
+              break;
+
+            default:
+              break;
+          }
+          // req.urlのswitch終わり
+          res.write(pug.renderFile('form.pug', {
             path: req.url,
-            firstItem: '寿司',
-            secondItem: 'ピザ'
+            firstItem,
+            secondItem
           }));
         }
+        
         res.end();
         break;
       case 'POST':
@@ -44,7 +74,7 @@ const server = http
           })
           .on('end', () => {
             const answer = new URLSearchParams(rawData);
-            const body = `${answer.get('name')}さんは${answer.get('favorite')}に投票しました`;
+            const body = `${answer.get('name') || 'ゲスト'}さんは${answer.get('favorite') || '選択せず'}に投票しました`;
             console.info(`[${now}] ${body}`);
             res.write(`<!DOCTYPE html><html lang="ja"><body><h1>${body}</h1></body></html>`);
             res.end();
