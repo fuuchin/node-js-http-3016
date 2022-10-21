@@ -76,7 +76,7 @@ const server = http
             const answer = new URLSearchParams(rawData);
             const body = `${answer.get('name') || 'ゲスト'}さんは${answer.get('favorite') || '選択せず'}に投票しました`;
             console.info(`[${now}] ${body}`);
-            res.write(`<!DOCTYPE html><html lang="ja"><body><h1>${body}</h1></body></html>`);
+            res.write(`<!DOCTYPE html><html lang="ja"><body><h1>${body}</h1><a href="/enquetes">アンケート一覧</a></body></html>`);
             res.end();
           });
         break;
@@ -90,7 +90,7 @@ const server = http
   .on('clientError', e => {
     console.error(`[${new Date()}] Client Error`, e);
   });
-const port = 8000;
+const port = process.env.PORT || 8000;
 server.listen(port, () => {
   console.info(`[${new Date()}] Listening on ${port}`);
 });
